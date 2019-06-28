@@ -27,8 +27,8 @@ resources:
     static_node_count       : 2
     max_node_count          : 10
 
-    zone                    : us-central1-b
-    region                  : us-central1
+    zone                    : us-east1-b
+    region                  : us-east1
     cidr                    : 10.10.0.0/16
 
     # Optional network configuration fields
@@ -79,7 +79,7 @@ resources:
     # Optional timer fields
     #suspend_time               : 300
 
-    default_users           : < GCP user email addr, comma separated >
+    default_users           : soichih@gmail.com
     #slurm_version           : 18.08-latest
     #default_account         : default
 
