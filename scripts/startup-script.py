@@ -104,6 +104,11 @@ def add_slurm_user():
         '-d', '/var/lib/slurm', '-u', SLURM_UID, '-g', 'slurm',
         '-s', '/bin/bash', 'slurm'])
 
+    subprocess.call(['groupadd', '-g', '1300', 'brlife'])
+    subprocess.call(['useradd', '-m', '-c', 'default user',
+        '-u', '1300', '-g', 'brlife',
+        '-s', '/bin/bash', 'brlife'])
+
 # END add_slurm_user()
 
 
@@ -216,11 +221,22 @@ def install_packages():
                 'wget',
                 'tmux',
                 'pdsh',
-                'openmpi'
+                'openmpi',
+                'jq',
+                'nodejs',
+                'singularity'
                ]
 
     while subprocess.call(['yum', 'install', '-y'] + packages):
         print "yum failed to install packages. Trying again in 5 seconds"
+        time.sleep(5)
+
+    while subprocess.call(['sed', '-i', 's/^\(mount hostfs = no\)$/\mount hostfs = yes/', '/etc/singularity/singularity.conf']):
+        print "failed to enable hostfs mounting for singularity"
+        time.sleep(5)
+
+    while subprocess.call(['git', 'clone', 'https://github.com/brainlife/abcd-spec.git', '/usr/local/abcd-spec']):
+        print "couldn't install abcd-hook"
         time.sleep(5)
 
     while subprocess.call(['pip', 'install', '--upgrade',
@@ -871,7 +887,7 @@ def setup_bash_profile():
     f = open('/etc/profile.d/slurm.sh', 'w')
     f.write("""
 S_PATH=%s
-PATH=$PATH:$S_PATH/bin:$S_PATH/sbin
+PATH=/usr/local/abcd-spec/hooks/slurm:$PATH:$S_PATH/bin:$S_PATH/sbin
 """ % CURR_SLURM_DIR)
     f.close()
 

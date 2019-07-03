@@ -20,11 +20,11 @@ imports:
 - path: slurm.jinja
 
 resources:
-- name: slurm-cluster
+- name: slurm
   type: slurm.jinja
   properties:
-    cluster_name            : g1
-    static_node_count       : 2
+    cluster_name            : gcp-slurm1
+    static_node_count       : 1
     max_node_count          : 10
 
     zone                    : us-east1-b
@@ -38,13 +38,17 @@ resources:
     #shared_vpc_host_proj    : < my-shared-vpc-project-name >
 
     controller_machine_type : n1-standard-2
-    compute_machine_type    : n1-standard-2
+    compute_machine_type    : n1-standard-16
     login_machine_type      : n1-standard-2
     #login_node_count        : 0
 
     # Optional compute configuration fields
     #cpu_platform               : Intel Skylake
-    #preemptible_bursting       : False
+    #
+   
+    #doesn't seem to work..
+    preemptible_bursting       : True
+   
     #external_compute_ips       : False
     #private_google_access      : True
 
@@ -66,13 +70,13 @@ resources:
     #     key1 : value1
     #     key2 : value2
 
-    #nfs_apps_server            :
+    #nfs_apps_server            : 
     #nfs_apps_dir               : /apps
-    #nfs_home_server            :
+    #nfs_home_server            : 
     #nfs_home_dir               : /home
-    #controller_secondary_disk          : True
-    #controller_secondary_disk_type     : pd-standard
-    #controller_secondary_disk_size_gb  : 300
+    controller_secondary_disk          : True
+    controller_secondary_disk_type     : pd-standard
+    controller_secondary_disk_size_gb  : 5000
 
     # Optional GPU configuration fields
     #gpu_type                   : nvidia-tesla-v100
