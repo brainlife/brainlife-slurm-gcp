@@ -223,16 +223,15 @@ def install_packages():
                 'pdsh',
                 'openmpi',
                 'jq',
-                'nodejs',
-                'singularity'
+                'nodejs'
                ]
 
     while subprocess.call(['yum', 'install', '-y'] + packages):
         print "yum failed to install packages. Trying again in 5 seconds"
         time.sleep(5)
 
-    while subprocess.call(['sed', '-i', 's/^\(mount hostfs = no\)$/\mount hostfs = yes/', '/etc/singularity/singularity.conf']):
-        print "failed to enable hostfs mounting for singularity"
+    #while subprocess.call(['sed', '-i', 's/^\(mount hostfs = no\)$/\mount hostfs = yes/', '/etc/singularity/singularity.conf']):
+    #    print "failed to enable hostfs mounting for singularity"
         time.sleep(5)
 
     while subprocess.call(['git', 'clone', 'https://github.com/brainlife/abcd-spec.git', '/usr/local/abcd-spec']):

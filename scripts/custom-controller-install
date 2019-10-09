@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mkdir /mnt/disks/sec/prod /mnt/disks/sec/test /mnt/disks/sec/dev
+mkdir /mnt/disks/sec/prod /mnt/disks/sec/test /mnt/disks/sec/dev /mnt/disks/sec/singularity
 chown brlife:brlife /mnt/disks/sec/*
 
 mkdir /home/brlife/.ssh
@@ -9,6 +9,10 @@ chmod 700 /home/brlife/.ssh
 chmod 600 /home/brlife/.ssh/authorized_keys
 chown brlife:brlife /home/brlife/.ssh
 chown brlife:brlife /home/brlife/.ssh/authorized_keys
+
+#place to store singularity cache
+mkdir /tmp/brlife
+chown brlife:brlife /tmp/brlife
 
 echo "#Public key to allow access to this resource through (gcp-slurm1)
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQClYwDOJ8AHNuGthVnugZcg6ZKSsGJxlQGmYM77dE8dzMFJuKQbwkub3UTFbad6tsdHl5QAz1DcaMka+J4LneUDIolvzJB3lLv8+qYNFyY9SunZynr2UvRW3S4bYOHQJWtYeU87qY98HMdFS9YdvSJv5N+qIwMTRUMhAVosSvIXObPjURmXcOFfrb8ZyQDz2DFP4saF10jWJcF+08ufu6KQmhE/HmO1HjCvVUG/9KC4pRQhMlMDkBuEkrXXqLIWucbq9InCDyZ8oVFeJl3owtqvt3pB39ctLHZukj/7ymbs2j9JFMCDhaBlBijEWkil9Y5wu9le4rjwZnzwwZbShHFN brainlife.io(gcp-slurm1)
@@ -24,4 +28,33 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDua1m/xP+hXKMW4ixoHjk7aQA1iuJdUFGDBOAwkYKz
 
 echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQChls21avMZyOuO+g/oAALpahtVhULAJHsCgY6EHBtWLdcN3hTrf6mDtYMooL8mChtCCNSYwI35VDNx7WFhbB7+y0CTcAiqvK3sYj9aAD0aamvx7ycTqte9Kq6+s/j8qzJPbPiaO1UOdy1Fd+rfPFZnzuKfPzeIXQsMF4rh3pjLO7i8KLaJyKjvpVelsJUHqRoVGlowPvjj/2wUxNg66+QPIdKWFu0BMbvB0Hea8WPGcEvPECprbPTJjEBSwK/SPtGMjvK3eYYdFt1DZpGBruFkOWrFDeym+DmSiwJmSY3gN0JpvniMELv/Dqitf4PaH+qTqANYS7nR4xF4zhD+rO1L hayashis@home
 " >> /home/brlife/.ssh/authorized_keys
+
+#add things to brlife .bashrc
+echo "unset XDG_RUNTIME_DIR" >> /home/brlife/.bashrc
+echo "export FREESURFER_LICENSE=\"hayashis@iu.edu 29511 *CPmh9xvKQKHE FSg0ijTusqaQc\"" >> /home/brlife/.bashrc
+echo "export SINGULARITY_CACHEDIR=/mnt/disks/sec/singularity" >> /home/brlife/.bashrc
+
+#install sensu
+echo '[sensu]
+name=sensu
+baseurl=https://sensu.global.ssl.fastly.net/yum/$releasever/$basearch/
+gpgkey=https://repositories.sensuapp.org/yum/pubkey.gpg
+gpgcheck=1
+enabled=1' | tee /etc/yum.repos.d/sensu.repo
+
+yum install -y sensu ioping sysstat
+
+/opt/sensu/embedded/bin/gem install --no-user-install \
+	sensu-plugins-io-checks \
+	sensu-plugins-hardware \
+	sensu-plugins-network-checks \
+	sensu-plugins-memory-checks \
+	sensu-plugins-load-checks \
+	sensu-plugins-vmstats \
+	sensu-plugins-disk-checks \
+	sensu-plugins-process-checks \
+	sensu-plugins-cpu-checks \
+	sensu-plugins-nvidia \
+	vmstat 
+
 

@@ -1,1 +1,1 @@
-gcloud deployment-manager deployments delete slurm1
+gcloud deployment-manager deployments delete slurm4
