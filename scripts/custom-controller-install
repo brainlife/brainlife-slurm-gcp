@@ -10,6 +10,11 @@ chmod 600 /home/brlife/.ssh/authorized_keys
 chown brlife:brlife /home/brlife/.ssh
 chown brlife:brlife /home/brlife/.ssh/authorized_keys
 
+#install abcd-spec
+git clone https://github.com/brainlife/abcd-spec.git ~/abcd-spec
+chown -R brlife:brlife ~/abcd-spec
+echo "export PATH=~/abcd-spec/hooks/slurm:\$PATH" >> /home/brlife/.bashrc
+
 #place to store singularity cache
 mkdir /tmp/brlife
 chown brlife:brlife /tmp/brlife

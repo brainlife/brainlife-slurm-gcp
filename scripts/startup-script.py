@@ -232,11 +232,11 @@ def install_packages():
 
     #while subprocess.call(['sed', '-i', 's/^\(mount hostfs = no\)$/\mount hostfs = yes/', '/etc/singularity/singularity.conf']):
     #    print "failed to enable hostfs mounting for singularity"
-        time.sleep(5)
+    #    time.sleep(5)
 
-    while subprocess.call(['git', 'clone', 'https://github.com/brainlife/abcd-spec.git', '/usr/local/abcd-spec']):
-        print "couldn't install abcd-hook"
-        time.sleep(5)
+    #while subprocess.call(['git', 'clone', 'https://github.com/brainlife/abcd-spec.git', '/usr/local/abcd-spec']):
+    #    print "couldn't install abcd-hook"
+    #    time.sleep(5)
 
     while subprocess.call(['pip', 'install', '--upgrade',
         'google-api-python-client']):
@@ -460,10 +460,10 @@ SlurmUser=slurm
 #SrunProlog=
 StateSaveLocation={apps_dir}/slurm/state
 SwitchType=switch/none
-#TaskEpilog=
+TaskEpilog=/apps/slurm/scripts/taskepilog.sh
 TaskPlugin=task/affinity,task/cgroup
 #TaskPluginParam=
-#TaskProlog=
+TaskProlog=/apps/slurm/scripts/taskprolog.sh
 #TopologyPlugin=topology/tree
 #TmpFS=/tmp
 #TrackWCKey=no
@@ -883,12 +883,12 @@ WantedBy=multi-user.target
 
 def setup_bash_profile():
 
-    f = open('/etc/profile.d/slurm.sh', 'w')
-    f.write("""
-S_PATH=%s
-PATH=/usr/local/abcd-spec/hooks/slurm:$PATH:$S_PATH/bin:$S_PATH/sbin
-""" % CURR_SLURM_DIR)
-    f.close()
+#    f = open('/etc/profile.d/slurm.sh', 'w')
+#    f.write("""
+#S_PATH=%s
+#PATH=/usr/local/abcd-spec/hooks/slurm:$PATH:$S_PATH/bin:$S_PATH/sbin
+#""" % CURR_SLURM_DIR)
+#    f.close()
 
     if GPU_COUNT and (INSTANCE_TYPE == "compute"):
         f = open('/etc/profile.d/cuda.sh', 'w')
